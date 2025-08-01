@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Translator - Twi, Yoruba & World Languages</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-globe-africa"></i>
+                    <span>Universal Translator</span>
+                </div>
+                <nav class="nav">
+                    <button class="nav-btn active" data-tab="translator">
+                        <i class="fas fa-language"></i>
+                        Translate
+                    </button>
+                    <button class="nav-btn" data-tab="history">
+                        <i class="fas fa-history"></i>
+                        History
+                    </button>
+                    <button class="nav-btn" data-tab="languages">
+                        <i class="fas fa-list"></i>
+                        Languages
+                    </button>
+                    <button class="nav-btn" data-tab="about">
+                        <i class="fas fa-info-circle"></i>
+                        About
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Translator Tab -->
+            <div id="translator" class="tab-content active">
+                <div class="translator-section">
+                    <div class="section-header">
+                        <h1>Translate Between Languages</h1>
+                        <p>Specializing in African languages - Twi, Yoruba, Hausa, Igbo and more</p>
+                    </div>
+
+                    <!-- Language Selection -->
+                    <div class="language-selector">
+                        <div class="language-input">
+                            <label for="source-lang">From</label>
+                            <select id="source-lang" class="lang-select">
+                                <option value="auto">Auto-detect</option>
+                                <option value="twi">Twi (Akan)</option>
+                                <option value="yoruba">Yoruba</option>
+                                <option value="hausa">Hausa</option>
+                                <option value="igbo">Igbo</option>
+                                <option value="english">English</option>
+                                <option value="french">French</option>
+                                <option value="arabic">Arabic</option>
+                                <option value="swahili">Swahili</option>
+                            </select>
+                        </div>
+                        
+                        <button class="swap-btn" id="swap-languages">
+                            <i class="fas fa-exchange-alt"></i>
+                        </button>
+                        
+                        <div class="language-input">
+                            <label for="target-lang">To</label>
+                            <select id="target-lang" class="lang-select">
+                                <option value="yoruba">Yoruba</option>
+                                <option value="twi">Twi (Akan)</option>
+                                <option value="english">English</option>
+                                <option value="hausa">Hausa</option>
+                                <option value="igbo">Igbo</option>
+                                <option value="french">French</option>
+                                <option value="arabic">Arabic</option>
+                                <option value="swahili">Swahili</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Translation Interface -->
+                    <div class="translation-interface">
+                        <div class="input-section">
+                            <div class="input-header">
+                                <span class="detected-lang" id="detected-lang"></span>
+                                <div class="input-actions">
+                                    <button class="action-btn" id="voice-input" title="Voice Input">
+                                        <i class="fas fa-microphone"></i>
+                                    </button>
+                                    <button class="action-btn" id="clear-input" title="Clear">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <textarea 
+                                id="input-text" 
+                                placeholder="Enter text to translate..."
+                                maxlength="5000"
+                            ></textarea>
+                            <div class="char-count">
+                                <span id="char-count">0</span>/5000
+                            </div>
+                        </div>
+
+                        <div class="output-section">
+                            <div class="output-header">
+                                <span class="confidence-badge" id="confidence-badge"></span>
+                                <div class="output-actions">
+                                    <button class="action-btn" id="speak-output" title="Speak Translation">
+                                        <i class="fas fa-volume-up"></i>
+                                    </button>
+                                    <button class="action-btn" id="copy-output" title="Copy Translation">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <button class="action-btn" id="save-translation" title="Save to History">
+                                        <i class="fas fa-bookmark"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="output-text" class="output-text">
+                                Translation will appear here...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Phrases -->
+                    <div class="quick-phrases">
+                        <h3>Quick Phrases</h3>
+                        <div class="phrases-grid" id="phrases-grid">
+                            <!-- Phrases will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Tab -->
+            <div id="history" class="tab-content">
+                <div class="history-section">
+                    <div class="section-header">
+                        <h2>Translation History</h2>
+                        <div class="history-actions">
+                            <button class="btn btn-secondary" id="clear-history">
+                                <i class="fas fa-trash"></i>
+                                Clear All
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="history-filters">
+                        <input type="text" id="history-search" placeholder="Search translations...">
+                        <select id="history-filter-from">
+                            <option value="">All source languages</option>
+                        </select>
+                        <select id="history-filter-to">
+                            <option value="">All target languages</option>
+                        </select>
+                    </div>
+                    
+                    <div id="history-list" class="history-list">
+                        <!-- History items will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Languages Tab -->
+            <div id="languages" class="tab-content">
+                <div class="languages-section">
+                    <div class="section-header">
+                        <h2>Supported Languages</h2>
+                        <p>We support <span id="total-languages">50+</span> languages with focus on African languages</p>
+                    </div>
+                    
+                    <div class="language-stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="african-languages">25</div>
+                            <div class="stat-label">African Languages</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="nigerian-languages">8</div>
+                            <div class="stat-label">Nigerian Languages</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="language-families">6</div>
+                            <div class="stat-label">Language Families</div>
+                        </div>
+                    </div>
+                    
+                    <div class="language-filters">
+                        <select id="region-filter">
+                            <option value="">All regions</option>
+                        </select>
+                        <select id="family-filter">
+                            <option value="">All families</option>
+                        </select>
+                    </div>
+                    
+                    <div id="languages-grid" class="languages-grid">
+                        <!-- Languages will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Tab -->
+            <div id="about" class="tab-content">
+                <div class="about-section">
+                    <div class="section-header">
+                        <h2>About Universal Translator</h2>
+                        <p>Bridging language barriers across Africa and the world</p>
+                    </div>
+                    
+                    <div class="about-content">
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <i class="fas fa-globe-africa"></i>
+                                <h3>African Focus</h3>
+                                <p>Specialized support for Twi, Yoruba, Hausa, Igbo, and other African languages</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-microphone"></i>
+                                <h3>Voice Support</h3>
+                                <p>Speech-to-text input and text-to-speech output for better accessibility</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-history"></i>
+                                <h3>Translation History</h3>
+                                <p>Save and manage your translations for future reference</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-mobile-alt"></i>
+                                <h3>Mobile Friendly</h3>
+                                <p>Responsive design that works perfectly on all devices</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-bolt"></i>
+                                <h3>Real-time</h3>
+                                <p>Instant translations as you type with confidence scoring</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-shield-alt"></i>
+                                <h3>Privacy First</h3>
+                                <p>Your translations are processed securely and privately</p>
+                            </div>
+                        </div>
+                        
+                        <div class="about-text">
+                            <h3>Our Mission</h3>
+                            <p>
+                                Universal Translator was created to break down language barriers, especially for African languages 
+                                that are often underrepresented in translation tools. We believe that everyone should be able to 
+                                communicate in their native language while connecting with the global community.
+                            </p>
+                            
+                            <h3>Technology</h3>
+                            <p>
+                                Our platform combines multiple translation approaches including custom dictionaries for African 
+                                languages, machine learning models, and community-contributed translations to provide the most 
+                                accurate results possible.
+                            </p>
+                            
+                            <h3>Keyboard Shortcuts</h3>
+                            <div class="shortcuts-grid">
+                                <div class="shortcut-item">
+                                    <kbd>Ctrl/Cmd + Enter</kbd>
+                                    <span>Translate text</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>Ctrl/Cmd + K</kbd>
+                                    <span>Focus input field</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>Ctrl/Cmd + L</kbd>
+                                    <span>Clear input</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>Ctrl/Cmd + S</kbd>
+                                    <span>Save translation</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>Ctrl/Cmd + Shift + S</kbd>
+                                    <span>Swap languages</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>Alt + 1-4</kbd>
+                                    <span>Switch tabs</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Translating...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="theme-toggle.js"></script>
+    <script src="offline-cache.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
