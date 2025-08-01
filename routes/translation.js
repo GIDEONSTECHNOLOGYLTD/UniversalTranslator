@@ -284,6 +284,9 @@ const CUSTOM_TRANSLATIONS = {
         'look': 'wo',
         'hear': 'gbo',
         'speak': 'so',
+        'tell': 'so fun',
+        'him': 'bawom',
+        'her': 'bawon',
         'eat': 'je',
         'drink': 'mu',
         'sleep': 'sun',
@@ -1641,6 +1644,42 @@ const CUSTOM_TRANSLATIONS = {
         'i need help': 'ek het hulp nodig'
     },
     
+    // Yoruba Sentence Patterns (Nigeria)
+    'english_to_yoruba_phrases': {
+        'tell him': 'so fun',
+        'tell her': 'so fun',
+        'i want to go': 'mo fe lo',
+        'i want to eat': 'mo fe je',
+        'i want to sleep': 'mo fe sun',
+        'i love you': 'mo ni ife re',
+        'thank you very much': 'e se pupo',
+        'how are you doing': 'bawo ni o se wa',
+        'what is your name': 'kini oruko re',
+        'my name is': 'oruko mi ni',
+        'where are you going': 'nibo lo n lo',
+        'i am going home': 'mo n lo si ile',
+        'good morning': 'e kaaro',
+        'good evening': 'e kaale',
+        'good night': 'o daaro',
+        'see you later': 'ma a ri e laipe',
+        'i am fine': 'mo wa daradara',
+        'i am hungry': 'ebi n pa mi',
+        'i am thirsty': 'omi n gbemi',
+        'i am tired': 'o ti re mi',
+        'help me': 'ran mi lowo',
+        'excuse me': 'e ma binu',
+        'how much is this': 'elo ni eyi',
+        'where is the market': 'nibo ni oja wa',
+        'i don\'t understand': 'mi o ye mi',
+        'speak slowly': 'so lohun roro',
+        'can you help me': 'se o le ran mi lowo',
+        'what time is it': 'ago melo ni',
+        'i am lost': 'mo ti sonu',
+        'where is the hospital': 'nibo ni ile iwosan wa',
+        'call the police': 'pe ologun',
+        'i need help': 'mo nilo iranlowo'
+    },
+    
     // English to Zulu sentence patterns
     'english_to_zulu_phrases': {
         'i want to go': 'ngifuna ukuhamba',
@@ -2911,11 +2950,25 @@ async function basicTranslation(text, from, to) {
         return text; // Return original if no translation available
     }
 
-    const translatedWords = words.map(word => {
-        return CUSTOM_TRANSLATIONS[customKey][word] || word;
-    });
-
-    return translatedWords.join(' ');
+    // Only translate if ALL words can be translated (no mixing!)
+    const translatedWords = [];
+    let allWordsTranslated = true;
+    
+    for (const word of words) {
+        const translation = CUSTOM_TRANSLATIONS[customKey][word];
+        if (translation) {
+            translatedWords.push(translation);
+        } else {
+            allWordsTranslated = false;
+            break;
+        }
+    }
+    
+    if (allWordsTranslated && translatedWords.length > 0) {
+        return translatedWords.join(' ');
+    }
+    
+    return text; // Return original if not all words translated
 }
 
 // Translate to English from African languages
@@ -3082,13 +3135,29 @@ function translateFromEnglish(text, to) {
             }
         }
         
-        // Word by word translation
+        // Word by word translation - ONLY if ALL words can be translated
         const words = lowerText.split(' ');
-        const translatedWords = words.map(word => {
-            return fallbackDict[word] || word;
-        });
+        const translatedWords = [];
+        let allWordsTranslated = true;
         
-        return translatedWords.join(' ');
+        for (const word of words) {
+            const translation = fallbackDict[word];
+            if (translation) {
+                translatedWords.push(translation);
+            } else {
+                // If ANY word can't be translated, don't mix languages
+                allWordsTranslated = false;
+                break;
+            }
+        }
+        
+        // Only return translation if ALL words were translated
+        if (allWordsTranslated && translatedWords.length > 0) {
+            return translatedWords.join(' ');
+        }
+        
+        // Otherwise return original text (no mixing!)
+        return text;
     }
     
     // Check for exact phrase matches first (longest phrases first)
