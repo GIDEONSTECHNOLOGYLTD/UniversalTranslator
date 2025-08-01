@@ -285,6 +285,10 @@ const CUSTOM_TRANSLATIONS = {
         'hear': 'gbo',
         'speak': 'so',
         'tell': 'so fun',
+        'forget': 'gbagbe',
+        'remember': 'ranti',
+        'to': 'si',
+        'you': 're',
         'him': 'bawom',
         'her': 'bawon',
         'eat': 'je',
@@ -1677,11 +1681,18 @@ const CUSTOM_TRANSLATIONS = {
         'i am lost': 'mo ti sonu',
         'where is the hospital': 'nibo ni ile iwosan wa',
         'call the police': 'pe ologun',
-        'i need help': 'mo nilo iranlowo'
+        'i need help': 'mo nilo iranlowo',
+        'hello i forget': 'kaabo mo gbagbe',
+        'i forget to tell you': 'mo gbagbe lati so fun e',
+        'i forget to tell you i love you': 'mo gbagbe lati so fun e pe mo ni ife re',
+        'hello i forget to tell you i love you': 'kaabo mo gbagbe lati so fun e pe mo ni ife re'
     },
     
     // English to Zulu sentence patterns
     'english_to_zulu_phrases': {
+        'hello i want to go': 'sawubona ngifuna ukuhamba',
+        'hello i want to eat': 'sawubona ngifuna ukudla',
+        'hello i want to sleep': 'sawubona ngifuna ukulala',
         'i want to go': 'ngifuna ukuhamba',
         'i want to eat': 'ngifuna ukudla',
         'i want to sleep': 'ngifuna ukulala',
@@ -3160,12 +3171,21 @@ function translateFromEnglish(text, to) {
         return text;
     }
     
-    // Check for exact phrase matches first (longest phrases first)
+    // Check for exact phrase matches first (longest phrases first) - TRANSLATE ALL MATCHES
+    let translatedText = lowerText;
     const sortedPhrases = Object.entries(dict).sort((a, b) => b[0].length - a[0].length);
+    let hasAnyTranslation = false;
+    
     for (const [english, translation] of sortedPhrases) {
-        if (lowerText.includes(english)) {
-            return lowerText.replace(new RegExp(english, 'gi'), translation);
+        if (translatedText.includes(english)) {
+            translatedText = translatedText.replace(new RegExp(english, 'gi'), translation);
+            hasAnyTranslation = true;
         }
+    }
+    
+    // If we found phrase translations, return the result
+    if (hasAnyTranslation) {
+        return translatedText;
     }
     
     // Word by word translation
